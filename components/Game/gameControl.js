@@ -88,7 +88,7 @@ class GameControl {
     }
 
     getStatusMessage() {
-        let nrTilesLeft = (this.nrOfTiles) - (this.openedTiles.length + this.flaggedTilesNr);
+        let nrTilesLeft = this.nrOfTiles - this.openedTiles.length;
         let nrBombsLeft = this.minesNr - parseInt(this.flaggedTilesNr)
         if (nrBombsLeft == 0) {
             return 'Congrats! You\'ve found all mines! :D'

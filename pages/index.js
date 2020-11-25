@@ -1,8 +1,8 @@
-import Layout from '../components/layout';
-import Instructions from '../components/instructions';
+import Layout from '../components/Layout';
+import Instructions from '../components/Instructions';
 
 // the game component
-import Game from '../components/game';
+import Game from '../components/Game';
 
 const Index = () => (
   <Layout title={`Minesweeper (tsmotta)`}>

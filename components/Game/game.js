@@ -1,9 +1,9 @@
 // game components
 import GameControl from './gameControl'
 import GameTile from './gameTile'
-import Desk from './desk';
-import Button from './button';
-import Checkbox from './checkbox';
+import Desk from '../Desk';
+import Button from '../Button';
+import Checkbox from '../Checkbox';
 
 class Game extends React.Component {
 	boardSize = 10

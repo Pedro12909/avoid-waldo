@@ -1,7 +1,6 @@
 // game components
-import Square from './square';
-import Mine from './mine';
-import Flag from './flag';
+import Square from '../Square';
+import { Mine, Flag } from '../Images';
 
 class GameTile extends React.Component {
 	constructor(props) {
@@ -52,6 +51,7 @@ class GameTile extends React.Component {
 		return (
 			<div>
 				<Square key={this.key} disabled={this.state.opened || this.state.flagged}
+					number={this.props.number}
 					onClick={() => { this.leftClick() }}
 					onContextMenu={(e) => { e.preventDefault(); this.rightClick() }}>
 					{this.state.opened && !this.state.flagged && this.props.type == '*' && <Mine />}
