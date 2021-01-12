@@ -11,7 +11,7 @@ It assumes you have the latest node and yarn installed.
 ```
 yarn install
 yarn dev
-open http://localhost:3000
+open http://localhost:1234
 ```
 
 ## Rules
