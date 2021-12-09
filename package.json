@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "parcel src/index.html",
+    "dev": "parcel watch src/index.html",
     "test": "jest"
   },
   "dependencies": {
