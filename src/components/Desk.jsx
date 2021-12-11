@@ -31,8 +31,53 @@ export const Desk = (props) => {
 
         // Confirm that this square is not a mine already
         if (!mineField[randX][randY]) {
-            mineField[randX][randY] = 1
+            mineField[randX][randY] = -1
             remainingMines--
+        }
+    }
+
+    // Populate neighbor mine count
+    for (let x = 0; x < mineField.length; x++) {
+        const row = mineField[x];
+        
+        for (let y = 0; y < row.length; y++) {
+            const square = row[y];
+
+            // Only increment neighbor counters if this is a bomb
+            if (square !== -1) continue
+            
+            // Top left
+            if (x > 0 && y > 0 && mineField[x-1][y-1] !== -1) {
+                mineField[x-1][y-1]++;
+            }
+            // Top
+            if (y > 0 && mineField[x][y-1] !== -1) {
+                mineField[x][y-1]++;
+            }
+            // Top right
+            if (x < boardSize - 1 && y > 0 && mineField[x+1][y-1] !== -1) {
+                mineField[x+1][y-1]++;
+            }
+            // Right
+            if (x < boardSize - 1 && mineField[x+1][y] !== -1) {
+                mineField[x+1][y]++;
+            }
+            // Bottom right
+            if (x < boardSize - 1 && y < boardSize - 1 && mineField[x+1][y+1] !== -1) {
+                mineField[x+1][y+1]++;
+            }
+            // Bottom
+            if (y < boardSize - 1 && mineField[x][y+1] !== -1) {
+                mineField[x][y+1]++;
+            }
+            // Bottom left
+            if (x > 0 && y < boardSize - 1 && mineField[x-1][y+1] !== -1) {
+                mineField[x-1][y+1]++;
+            }
+            // Left
+            if (x > 0 && mineField[x-1][y] !== -1) {
+                mineField[x-1][y]++;
+            }
         }
     }
 
@@ -40,7 +85,7 @@ export const Desk = (props) => {
         <Grid boardSize={10}>
             {mineField.map((row, posX) =>
                 row.map((square, posY) => (
-                    <Square key={`${posX},${posY}`} isBomb={square === 1} />
+                    <Square key={`${posX},${posY}`} isBomb={square === -1} neighbors={square}/>
                 ))
             )}
         </Grid>
