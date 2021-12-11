@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
-import { Game } from './containers/game'
+import { Desk } from './components/desk'
 
 const Title = styled.h1`
     margin: 32px;
@@ -16,7 +16,7 @@ const Container = styled.div`
 const App = () => (
     <Container>
         <Title>Minesweeper</Title>
-        <Game />
+        <Desk boardSize={10} numberOfMines={10} />
     </Container>
 )
 

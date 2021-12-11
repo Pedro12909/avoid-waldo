@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
 import { Mine } from './mine'
+import { Flag } from './flag'
 
 const Cell = styled.div`
     width: 40px;
@@ -15,18 +16,25 @@ const Cell = styled.div`
 `
 
 export const Square = (props) => {
-    const [revealed, setRevealed] = useState(false)
 
-    const revealSquare = () => {
-        if (revealed) return
-
-        setRevealed(true)
+    const handleLeftClick = () => {
+        props.revealSquareHandler(props.posX, props.posY)
     }
 
+    const handleRightClick = evt => {
+        // Toggle flag status
+        evt.preventDefault()
+        if (!props.isRevealed) {
+            props.flagSquareHandler(props.posX, props.posY)      
+        }
+    }
+
+    console.log('render square');
     return (
-        <Cell onClick={revealSquare} disabled={revealed}>
-            {revealed && props.isBomb && <Mine />}
-            {revealed && !props.isBomb && <span>{props.neighbors > 0 ? props.neighbors : null}</span>}
+        <Cell onClick={handleLeftClick} onContextMenu={handleRightClick} disabled={props.isRevealed}>
+            {props.isRevealed && props.isMine && <Mine />}
+            {props.isRevealed && !props.isMine && <span>{props.neighbors > 0 ? props.neighbors : null}</span>}
+            {props.isFlagged && <Flag />}
         </Cell>
     )
 }
