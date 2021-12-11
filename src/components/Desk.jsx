@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Square } from './square'
 
-const rand = (max) => Math.floor(Math.random() * max)
+import { generateMineField } from '../helpers/generate-mine-field'
 
 const Grid = styled.div`
     margin: 32px;
@@ -12,81 +12,6 @@ const Grid = styled.div`
     display: flex;
     flex-wrap: wrap;
 `
-
-const generateMineField = (size, numberOfMines) => {
-    // Initialize a 2D array
-    const mineField = [...Array(size).keys()].map((row, x) =>
-        [...Array(size).keys()].map((square, y) => ({
-            neighbors: 0,
-            isMine: false,
-            posX: x,
-            posY: y,
-            flagged: false,
-            revealed: false,
-        }))
-    )
-
-    // Randomly populate the mine field with mines
-    // If a given square is a mine, it will be equal to 1
-    let remainingMines = numberOfMines
-    while (remainingMines > 0) {
-        const randX = rand(size)
-        const randY = rand(size)
-
-        // Confirm that this square is not a mine already
-        if (!mineField[randX][randY].isMine) {
-            mineField[randX][randY].isMine = true
-            remainingMines--
-        }
-    }
-
-    // Populate neighbor mine count
-    for (let x = 0; x < mineField.length; x++) {
-        const row = mineField[x]
-
-        for (let y = 0; y < row.length; y++) {
-            const square = row[y]
-
-            // Only increment neighbor counters if this is a a mine
-            if (!square.isMine) continue
-
-            // Top left
-            if (x > 0 && y > 0) {
-                mineField[x - 1][y - 1].neighbors++
-            }
-            // Top
-            if (y > 0) {
-                mineField[x][y - 1].neighbors++
-            }
-            // Top right
-            if (x < size - 1 && y > 0) {
-                mineField[x + 1][y - 1].neighbors++
-            }
-            // Right
-            if (x < size - 1) {
-                mineField[x + 1][y].neighbors++
-            }
-            // Bottom right
-            if (x < size - 1 && y < size - 1) {
-                mineField[x + 1][y + 1].neighbors++
-            }
-            // Bottom
-            if (y < size - 1) {
-                mineField[x][y + 1].neighbors++
-            }
-            // Bottom left
-            if (x > 0 && y < size - 1) {
-                mineField[x - 1][y + 1].neighbors++
-            }
-            // Left
-            if (x > 0) {
-                mineField[x - 1][y].neighbors++
-            }
-        }
-    }
-
-    return mineField
-}
 
 export const Desk = (props) => {
     const { boardSize, numberOfMines } = props
@@ -107,34 +32,93 @@ export const Desk = (props) => {
         // User clicked a mine. Game over
         if (clickedSquare.isMine) {
             //TODO: do something with this
-            setGameOver(true);
+            setGameOver(true)
         }
 
         // User clicked on a square with no neighbors.
         if (clickedSquare.neighbors === 0) {
-            //TODO: implement recursive click
+            revealAdjacentEmptySquares(posX, posY)
+        } else {
+            // Set state
+            newMineField[posX] = [...newMineField[posX]]
+
+            newMineField[posX][posY] = {
+                ...newMineField[posX][posY],
+                isFlagged: false,
+                isRevealed: true,
+            }
+
+            setMineField(newMineField)
+        }
+    }
+
+    const revealAdjacentEmptySquares = (posX, posY) => {
+        // Shallow copy all the minefield to prevent state mutations
+        const newMineField = [...mineField].map((row) => [...row].map(square => ({...square})))
+        console.log([...mineField].map((row) => [...row].map(square => square.neighbors)))
+
+        let unvisitedEmptySquares = []
+        unvisitedEmptySquares.push(newMineField[posX][posY])
+
+        while (unvisitedEmptySquares.length > 0) {
+            let currentSquare = unvisitedEmptySquares.pop()
+
+            let { posX: x, posY: y } = currentSquare
+
+            newMineField[x][y].isRevealed = true
+
+            const emptyNeighbors = getEmptyNeighbors(currentSquare, newMineField)
+            console.log(emptyNeighbors)
+
+            unvisitedEmptySquares.push(...emptyNeighbors)
         }
 
-        // Set state
-        newMineField[posX] = [...newMineField[posX]]
-
-        newMineField[posX][posY] = {
-            ...newMineField[posX][posY],
-            flagged: false,
-            revealed: true
-        }
+        console.log([...mineField].map((row) => [...row].map(square => square.neighbors)))
 
         setMineField(newMineField)
+    }
+
+    const getEmptyNeighbors = (square, mineFieldClone) => {
+        const {posX, posY} = square
+
+        const emptyNeighbors = []
+
+        for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 1; y++) {
+                if (x === 0 && y === 0) continue
+
+                let square = null
+                try {
+                    square = { ...mineFieldClone[posX + x][posY + y] }
+                } catch (e) {
+                    square = null
+                }
+
+                // Check if square is not out of boundaries
+                if (square) {
+                    if (
+                        square.neighbors === 0 &&
+                        !square.isMine &&
+                        !square.isRevealed &&
+                        !square.isFlagged
+                    ) {
+                        emptyNeighbors.push(square)
+                    }
+                }
+            }
+        }
+
+        return emptyNeighbors
     }
 
     const flagSquareHandler = (posX, posY) => {
         const newMineField = [...mineField]
         newMineField[posX] = [...newMineField[posX]]
 
-        const invertedFlag = !newMineField[posX][posY].flagged
+        const invertedFlag = !newMineField[posX][posY].isFlagged
         newMineField[posX][posY] = {
             ...newMineField[posX][posY],
-            flagged: invertedFlag,
+            isFlagged: invertedFlag,
         }
 
         setMineField(newMineField)
@@ -148,8 +132,8 @@ export const Desk = (props) => {
                         key={`${square.posX},${square.posY}`}
                         isMine={square.isMine}
                         neighbors={square.neighbors}
-                        isFlagged={square.flagged}
-                        isRevealed={square.revealed}
+                        isFlagged={square.isFlagged}
+                        isRevealed={square.isRevealed}
                         flagSquareHandler={flagSquareHandler}
                         revealSquareHandler={revealSquareHandler}
                         posX={square.posX}

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Mine } from './mine'
 import { Flag } from './flag'
@@ -29,7 +29,6 @@ export const Square = (props) => {
         }
     }
 
-    console.log('render square');
     return (
         <Cell onClick={handleLeftClick} onContextMenu={handleRightClick} disabled={props.isRevealed}>
             {props.isRevealed && props.isMine && <Mine />}
