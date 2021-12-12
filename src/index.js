@@ -2,29 +2,27 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
+import GAME_STATUS from './game-status'
+
 import { Desk } from './components/desk'
+import { GameStatusButton } from './components/GameStatusButton'
 
 const Container = styled.div`
     width: 40%;
     margin: 0 auto;
 `
 
-const GAME_STATUS = {
-    PLAYING: 'playing',
-    WIN: 'win',
-    DEFEAT: 'defeat',
-}
-
 const App = () => {
+    const [gameStatus, setgameStatus] = useState(GAME_STATUS.PLAYING)
+
     return (
         <Container>
             <h1>Avoid Waldo</h1>
             <p>
-                The classic Where's Waldo game, but with a spin. Click the image
-                below at any time to restart the game
+                The classic Where's Waldo game, but with a spin.
             </p>
-            
-            <Desk boardSize={10} numberOfMines={10} />
+            <GameStatusButton status={gameStatus} />
+            <Desk boardSize={5} numberOfMines={1} setGameStatus={setgameStatus} />
         </Container>
     )
 }

@@ -17,13 +17,17 @@ export const Desk = (props) => {
     const { boardSize, numberOfMines } = props
 
     const [mineLocations, setMineLocations] = useState([])
+    const [revealedSquares, setRevealedSquares] = useState(0)
     const [mineField, setMineField] = useState([])
     const [gameOver, setGameOver] = useState(false)
 
     useEffect(() => {
         // Generate the minefield
-        const {mineField: newMineField, mines} = generateMineField(boardSize, numberOfMines)
-        
+        const { mineField: newMineField, mines } = generateMineField(
+            boardSize,
+            numberOfMines
+        )
+
         setMineLocations(mines)
 
         setMineField(newMineField)
@@ -33,7 +37,7 @@ export const Desk = (props) => {
         const newMineField = [...mineField]
 
         mineLocations.forEach((mine) => {
-            const {posX, posY} = mine
+            const { posX, posY } = mine
 
             newMineField[posX][posY] = {
                 ...newMineField[posX][posY],
@@ -71,11 +75,15 @@ export const Desk = (props) => {
                 isRevealed: true,
             }
 
+            setRevealedSquares(revealedSquares + 1)
+
             setMineField(newMineField)
         }
     }
 
     const revealAdjacentEmptySquares = (posX, posY) => {
+        let revealed = 0
+
         // Shallow copy all the minefield to prevent state mutations
         const newMineField = [...mineField].map((row) =>
             [...row].map((square) => ({ ...square }))
@@ -87,9 +95,14 @@ export const Desk = (props) => {
         while (unvisitedEmptySquares.length > 0) {
             let currentSquare = unvisitedEmptySquares.pop()
 
+            if (currentSquare.isRevealed) continue
+
             let { posX: x, posY: y } = currentSquare
 
             newMineField[x][y].isRevealed = true
+            revealed++
+
+            if (currentSquare.neighbors !== 0) continue
 
             const emptyNeighbors = getEmptyNeighbors(
                 currentSquare,
@@ -99,6 +112,7 @@ export const Desk = (props) => {
         }
 
         setMineField(newMineField)
+        setRevealedSquares(revealedSquares + revealed)
     }
 
     const getEmptyNeighbors = (square, mineFieldClone) => {
@@ -123,11 +137,7 @@ export const Desk = (props) => {
                     !square.isRevealed &&
                     !square.isFlagged
                 ) {
-                    if (square.neighbors === 0) {
-                        emptyNeighbors.push(square)
-                    } else {
-                        square.isRevealed = true
-                    }
+                    emptyNeighbors.push(square)
                 }
             }
         }
@@ -147,7 +157,10 @@ export const Desk = (props) => {
         }
 
         setMineField(newMineField)
+        setRevealedSquares(revealedSquares + 1)
     }
+
+    console.log(revealedSquares)
 
     return (
         <Grid boardSize={boardSize}>
