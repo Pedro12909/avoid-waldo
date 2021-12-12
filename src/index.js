@@ -8,8 +8,27 @@ import { Desk } from './components/desk'
 import { GameStatusButton } from './components/GameStatusButton'
 
 const Container = styled.div`
-    width: 40%;
-    margin: 0 auto;
+    width: 60%;
+    margin: 1% auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+`
+
+const Title = styled.h1`
+    font-size: 64px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-bottom: 0;
+`
+
+const Subtitle = styled.p`
+    font-size: 20px;
+    font-weight: regular;
+    color: white;
+    text-align: center;
 `
 
 const App = () => {
@@ -19,12 +38,15 @@ const App = () => {
 
     return (
         <Container>
-            <h1>Avoid Waldo</h1>
-            <p>The classic Where's Waldo game, but with a spin.</p>
+            <Title>Avoid Waldo!</Title>
+            <Subtitle>
+                A twist of the classic Minesweeper game, but you have to avoid
+                Waldo.
+            </Subtitle>
             <GameStatusButton status={gameStatus} />
             <Desk
-                boardSize={10}
-                numberOfMines={1}
+                boardSize={20}
+                numberOfMines={40}
                 setGameStatus={setgameStatus}
                 isGameOver={isGameOver}
             />

@@ -7,12 +7,10 @@ import { generateMineField } from '../helpers/generate-mine-field'
 import GAME_STATUS from '../game-status'
 
 const Grid = styled.div`
-    margin: 32px;
-    width: ${(props) => `${props.boardSize * 40 + 2}px`};
-    height: 402px;
-    border: 1px solid black;
+    width: ${(props) => `${props.boardSize * 40}px`};
     display: flex;
     flex-wrap: wrap;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 `
 
 export const Desk = (props) => {

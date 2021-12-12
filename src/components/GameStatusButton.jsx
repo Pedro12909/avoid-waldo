@@ -8,9 +8,9 @@ import waldo from '../resources/waldo.svg'
 import mage from '../resources/mage.svg'
 
 const Image = styled.img`
-    width: 4rem;
+    width: 3rem;
     height: auto;
-    cursor: pointer
+    margin-bottom: 1rem;
 `
 
 export const GameStatusButton = (props) => {
