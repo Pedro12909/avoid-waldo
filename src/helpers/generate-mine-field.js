@@ -8,10 +8,12 @@ export const generateMineField = (size, numberOfMines) => {
             isMine: false,
             posX: x,
             posY: y,
-            flagged: false,
-            revealed: false,
+            isFlagged: false,
+            isRevealed: false,
         }))
     )
+
+    const mines = []
 
     // Randomly populate the mine field with mines
     // If a given square is a mine, it will be equal to 1
@@ -20,9 +22,12 @@ export const generateMineField = (size, numberOfMines) => {
         const randX = rand(size)
         const randY = rand(size)
 
+        const square = mineField[randX][randY]
+
         // Confirm that this square is not a mine already
-        if (!mineField[randX][randY].isMine) {
-            mineField[randX][randY].isMine = true
+        if (!square.isMine) {
+            square.isMine = true
+            mines.push(square)
             remainingMines--
         }
     }
@@ -72,5 +77,5 @@ export const generateMineField = (size, numberOfMines) => {
         }
     }
 
-    return mineField
+    return {mineField, mines}
 }
