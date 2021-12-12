@@ -4,6 +4,8 @@ import { Square } from './square'
 
 import { generateMineField } from '../helpers/generate-mine-field'
 
+import GAME_STATUS from '../game-status'
+
 const Grid = styled.div`
     margin: 32px;
     width: ${(props) => `${props.boardSize * 40 + 2}px`};
@@ -18,8 +20,17 @@ export const Desk = (props) => {
 
     const [mineLocations, setMineLocations] = useState([])
     const [revealedSquares, setRevealedSquares] = useState(0)
+    const [flaggedSquares, setFlaggedSquares] = useState(0)
     const [mineField, setMineField] = useState([])
     const [gameOver, setGameOver] = useState(false)
+
+    useEffect(() => {
+        console.log('Revealed', revealedSquares)
+        console.log('Flagged', flaggedSquares)
+        if (checkIfUserWon()) {
+            props.setGameStatus(GAME_STATUS.WIN)
+        }
+    }, [revealedSquares, flaggedSquares])
 
     useEffect(() => {
         // Generate the minefield
@@ -32,6 +43,15 @@ export const Desk = (props) => {
 
         setMineField(newMineField)
     }, [])
+
+    const checkIfUserWon = () => {
+        const totalBoardSize = Math.pow(boardSize, 2)
+
+        return (
+            revealedSquares + flaggedSquares === totalBoardSize &&
+            revealedSquares === totalBoardSize - mineLocations.length
+        )
+    }
 
     const revealAllMines = () => {
         const newMineField = [...mineField]
@@ -50,7 +70,7 @@ export const Desk = (props) => {
     }
 
     const revealSquareHandler = (posX, posY) => {
-        if (gameOver) return
+        if (props.isGameOver) return
 
         const newMineField = [...mineField]
 
@@ -59,7 +79,7 @@ export const Desk = (props) => {
         // User clicked a mine. Game over
         if (clickedSquare.isMine) {
             revealAllMines()
-            setGameOver(true)
+            props.setGameStatus(GAME_STATUS.DEFEAT)
         }
 
         // User clicked on a square with no neighbors.
@@ -71,13 +91,17 @@ export const Desk = (props) => {
 
             newMineField[posX][posY] = {
                 ...newMineField[posX][posY],
-                isFlagged: false,
                 isRevealed: true,
             }
 
             setRevealedSquares(revealedSquares + 1)
 
             setMineField(newMineField)
+
+            if (newMineField[posX][posY].isFlagged) {
+                newMineField[posX][posY] = false
+                setFlaggedSquares(flaggedSquares - 1)
+            }
         }
     }
 
@@ -101,6 +125,11 @@ export const Desk = (props) => {
 
             newMineField[x][y].isRevealed = true
             revealed++
+
+            if (newMineField[x][y].isFlagged) {
+                newMineField[x][y].isFlagged = false
+                setFlaggedSquares(flaggedSquares - 1)
+            }
 
             if (currentSquare.neighbors !== 0) continue
 
@@ -146,7 +175,8 @@ export const Desk = (props) => {
     }
 
     const flagSquareHandler = (posX, posY) => {
-        if (gameOver) return
+        if (props.isGameOver) return
+
         const newMineField = [...mineField]
         newMineField[posX] = [...newMineField[posX]]
 
@@ -156,11 +186,15 @@ export const Desk = (props) => {
             isFlagged: invertedFlag,
         }
 
-        setMineField(newMineField)
-        setRevealedSquares(revealedSquares + 1)
-    }
 
-    console.log(revealedSquares)
+        if (invertedFlag) {
+            setFlaggedSquares(flaggedSquares + 1)
+        } else {
+            setFlaggedSquares(flaggedSquares - 1)
+        }
+
+        setMineField(newMineField)
+    }
 
     return (
         <Grid boardSize={boardSize}>

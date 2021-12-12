@@ -15,14 +15,19 @@ const Container = styled.div`
 const App = () => {
     const [gameStatus, setgameStatus] = useState(GAME_STATUS.PLAYING)
 
+    const isGameOver = gameStatus !== GAME_STATUS.PLAYING
+
     return (
         <Container>
             <h1>Avoid Waldo</h1>
-            <p>
-                The classic Where's Waldo game, but with a spin.
-            </p>
+            <p>The classic Where's Waldo game, but with a spin.</p>
             <GameStatusButton status={gameStatus} />
-            <Desk boardSize={5} numberOfMines={1} setGameStatus={setgameStatus} />
+            <Desk
+                boardSize={10}
+                numberOfMines={1}
+                setGameStatus={setgameStatus}
+                isGameOver={isGameOver}
+            />
         </Container>
     )
 }

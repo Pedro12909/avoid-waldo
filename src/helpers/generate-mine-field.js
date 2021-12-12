@@ -27,7 +27,7 @@ export const generateMineField = (size, numberOfMines) => {
         // Confirm that this square is not a mine already
         if (!square.isMine) {
             square.isMine = true
-            mines.push(square)
+            mines.push({posX: randX, posY: randY})
             remainingMines--
         }
     }
