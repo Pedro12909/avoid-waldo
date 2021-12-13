@@ -2,10 +2,7 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
-import GAME_STATUS from './game-status'
-
 import { Desk } from './components/desk'
-import { GameStatusButton } from './components/GameStatusButton'
 
 const Container = styled.div`
     width: 60%;
@@ -32,10 +29,6 @@ const Subtitle = styled.p`
 `
 
 const App = () => {
-    const [gameStatus, setgameStatus] = useState(GAME_STATUS.PLAYING)
-
-    const isGameOver = gameStatus !== GAME_STATUS.PLAYING
-
     return (
         <Container>
             <Title>Avoid Waldo!</Title>
@@ -43,12 +36,9 @@ const App = () => {
                 A twist of the classic Minesweeper game, but you have to avoid
                 Waldo.
             </Subtitle>
-            <GameStatusButton status={gameStatus} />
             <Desk
-                boardSize={10}
-                numberOfMines={15}
-                setGameStatus={setgameStatus}
-                isGameOver={isGameOver}
+                boardSize={5}
+                numberOfMines={3}
             />
         </Container>
     )

@@ -11,6 +11,9 @@ const Image = styled.img`
     width: 3rem;
     height: auto;
     margin-bottom: 1rem;
+    &:hover {
+        cursor: pointer;
+    }
 `
 
 export const GameStatusButton = (props) => {
@@ -28,5 +31,5 @@ export const GameStatusButton = (props) => {
             break
     }
 
-    return <Image src={path} onClick={props.reset}/>
+    return <Image src={path} onClick={props.resetGame}/>
 }

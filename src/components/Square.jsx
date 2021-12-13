@@ -80,6 +80,7 @@ export const Square = (props) => {
             onClick={handleLeftClick}
             onContextMenu={handleRightClick}
             backgroundColor={squareColor}
+            disabled={props.isRevealed}
         >
             {props.isRevealed && props.isMine && <Mine />}
             {props.isRevealed && !props.isMine && (

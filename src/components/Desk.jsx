@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Square } from './square'
 
+import {GameStatusButton} from './GameStatusButton'
+import { Square } from './square'
 import { generateMineField } from '../helpers/generate-mine-field'
 
 import GAME_STATUS from '../game-status'
@@ -20,14 +21,14 @@ export const Desk = (props) => {
     const [revealedSquares, setRevealedSquares] = useState(0)
     const [flaggedSquares, setFlaggedSquares] = useState(0)
     const [mineField, setMineField] = useState([])
-    const [gameOver, setGameOver] = useState(false)
+    const [gameStatus, setGameStatus] = useState(GAME_STATUS.PLAYING)
 
     useEffect(() => {
         console.log('Revealed', revealedSquares)
         console.log('Flagged', flaggedSquares)
         console.log('Minefield', mineField)
         if (checkIfUserWon()) {
-            props.setGameStatus(GAME_STATUS.WIN)
+            setGameStatus(GAME_STATUS.WIN)
         }
     }, [revealedSquares, flaggedSquares])
 
@@ -42,6 +43,21 @@ export const Desk = (props) => {
 
         setMineField(newMineField)
     }, [])
+
+    const resetGame = () => {
+        setMineLocations([])
+        setRevealedSquares(0)
+        setFlaggedSquares(0)
+
+        const { mineField: newMineField, mines } = generateMineField(
+            boardSize,
+            numberOfMines
+        )
+        setMineLocations(mines)
+
+        setMineField(newMineField)
+        setGameStatus(GAME_STATUS.PLAYING)
+    }
 
     const checkIfUserWon = () => {
         const totalBoardSize = Math.pow(boardSize, 2)
@@ -69,7 +85,7 @@ export const Desk = (props) => {
     }
 
     const revealSquareHandler = (posX, posY) => {
-        if (props.isGameOver) return
+        if (gameStatus !== GAME_STATUS.PLAYING) return
 
         const newMineField = [...mineField]
 
@@ -78,7 +94,7 @@ export const Desk = (props) => {
         // User clicked a mine. Game over
         if (clickedSquare.isMine) {
             revealAllMines()
-            props.setGameStatus(GAME_STATUS.DEFEAT)
+            setGameStatus(GAME_STATUS.DEFEAT)
         }
 
         // User clicked on a square with no neighbors.
@@ -174,7 +190,7 @@ export const Desk = (props) => {
     }
 
     const flagSquareHandler = (posX, posY) => {
-        if (props.isGameOver) return
+        if (gameStatus !== GAME_STATUS.PLAYING) return
 
         const newMineField = [...mineField]
         newMineField[posX] = [...newMineField[posX]]
@@ -184,7 +200,6 @@ export const Desk = (props) => {
             ...newMineField[posX][posY],
             isFlagged: invertedFlag,
         }
-
 
         if (invertedFlag) {
             setFlaggedSquares(flaggedSquares + 1)
@@ -196,22 +211,25 @@ export const Desk = (props) => {
     }
 
     return (
-        <Grid boardSize={boardSize}>
-            {mineField.map((row) =>
-                row.map((square) => (
-                    <Square
-                        key={`${square.posX},${square.posY}`}
-                        isMine={square.isMine}
-                        neighbors={square.neighbors}
-                        isFlagged={square.isFlagged}
-                        isRevealed={square.isRevealed}
-                        flagSquareHandler={flagSquareHandler}
-                        revealSquareHandler={revealSquareHandler}
-                        posX={square.posX}
-                        posY={square.posY}
-                    />
-                ))
-            )}
-        </Grid>
+        <>
+            <GameStatusButton status={gameStatus} resetGame={resetGame} />
+            <Grid boardSize={boardSize}>
+                {mineField.map((row) =>
+                    row.map((square) => (
+                        <Square
+                            key={`${square.posX},${square.posY}`}
+                            isMine={square.isMine}
+                            neighbors={square.neighbors}
+                            isFlagged={square.isFlagged}
+                            isRevealed={square.isRevealed}
+                            flagSquareHandler={flagSquareHandler}
+                            revealSquareHandler={revealSquareHandler}
+                            posX={square.posX}
+                            posY={square.posY}
+                        />
+                    ))
+                )}
+            </Grid>
+        </>
     )
 }
