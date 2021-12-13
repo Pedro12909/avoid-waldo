@@ -45,8 +45,8 @@ const App = () => {
             </Subtitle>
             <GameStatusButton status={gameStatus} />
             <Desk
-                boardSize={20}
-                numberOfMines={40}
+                boardSize={10}
+                numberOfMines={15}
                 setGameStatus={setgameStatus}
                 isGameOver={isGameOver}
             />

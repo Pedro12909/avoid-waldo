@@ -8,6 +8,8 @@ const cellBgColorFn = (cellProps) => {
 
     if (cellProps.isRevealed) return '#c0c0c0'
 
+    if (cellProps.isFlagged) return 'orange'
+
     return 'white'
 }
 
@@ -58,7 +60,9 @@ const NeighborCount = styled.span`
 
 export const Square = (props) => {
     const handleLeftClick = () => {
-        props.revealSquareHandler(props.posX, props.posY)
+        if (!props.isRevealed) {
+            props.revealSquareHandler(props.posX, props.posY)
+        }
     }
 
     const handleRightClick = (evt) => {

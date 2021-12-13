@@ -25,6 +25,7 @@ export const Desk = (props) => {
     useEffect(() => {
         console.log('Revealed', revealedSquares)
         console.log('Flagged', flaggedSquares)
+        console.log('Minefield', mineField)
         if (checkIfUserWon()) {
             props.setGameStatus(GAME_STATUS.WIN)
         }
@@ -92,14 +93,14 @@ export const Desk = (props) => {
                 isRevealed: true,
             }
 
+            if (newMineField[posX][posY].isFlagged) {
+                newMineField[posX][posY].isFlagged = false
+                setFlaggedSquares(flaggedSquares - 1)
+            }
+
             setRevealedSquares(revealedSquares + 1)
 
             setMineField(newMineField)
-
-            if (newMineField[posX][posY].isFlagged) {
-                newMineField[posX][posY] = false
-                setFlaggedSquares(flaggedSquares - 1)
-            }
         }
     }
 
