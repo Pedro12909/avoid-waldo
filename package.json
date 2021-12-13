@@ -2,12 +2,12 @@
   "name": "minesweeper",
   "version": "1.0.0",
   "description": "Minesweeper",
-  "main": "index.js",
   "author": "michi <michi@cloudflare.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html",
     "test": "jest"
   },
   "dependencies": {
@@ -19,8 +19,6 @@
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-react": "^7.12.10",
     "eslint": "^8.4.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.3.0",
