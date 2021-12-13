@@ -26,37 +26,40 @@ const Cell = styled.div`
     font-size: 18px;
 `
 
-const NeighborCount = styled.span`
+const Span = styled.span`
     font-weight: bold;
-    color: ${(props) => {
-        let color
-        switch (props.value) {
-            case 1:
-                color = 'blue'
-                break
-            case 2:
-                color = 'green'
-                break
-            case 3:
-                color = 'purple'
-                break
-            case 5:
-                color = 'darkred'
-                break
-            case 6:
-                color = 'yellow'
-                break
-            case 7:
-                color = 'cyan'
-                break
-            default:
-                color = 'red'
-                break
-        }
-
-        return color
-    }};
+    color: ${(props) => props.color};
 `
+
+const NeighborCount = ({ value }) => {
+    let color
+
+    switch (value) {
+        case 1:
+            color = 'blue'
+            break
+        case 2:
+            color = 'green'
+            break
+        case 3:
+            color = 'purple'
+            break
+        case 5:
+            color = 'darkred'
+            break
+        case 6:
+            color = 'yellow'
+            break
+        case 7:
+            color = 'cyan'
+            break
+        default:
+            color = 'red'
+            break
+    }
+
+    return <Span color={color}>{value > 0 ? value : null}</Span>
+}
 
 export const Square = (props) => {
     const handleLeftClick = () => {
@@ -65,9 +68,13 @@ export const Square = (props) => {
         }
     }
 
+    /**
+     * Toggle flag status
+     */
     const handleRightClick = (evt) => {
-        // Toggle flag status
+        // Prevent context menu open
         evt.preventDefault()
+
         if (!props.isRevealed) {
             props.flagSquareHandler(props.posX, props.posY)
         }
@@ -84,9 +91,7 @@ export const Square = (props) => {
         >
             {props.isRevealed && props.isMine && <Mine />}
             {props.isRevealed && !props.isMine && (
-                <NeighborCount value={props.neighbors}>
-                    {props.neighbors > 0 ? props.neighbors : null}
-                </NeighborCount>
+                <NeighborCount value={props.neighbors} />
             )}
             {props.isFlagged && <Flag />}
         </Cell>

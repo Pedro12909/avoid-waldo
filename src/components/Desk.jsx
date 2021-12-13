@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import {GameStatusButton} from './GameStatusButton'
+import { GameStatusButton } from './GameStatusButton'
 import { Square } from './square'
 import { generateMineField } from '../helpers/generate-mine-field'
 
@@ -23,15 +23,23 @@ export const Desk = (props) => {
     const [mineField, setMineField] = useState([])
     const [gameStatus, setGameStatus] = useState(GAME_STATUS.PLAYING)
 
+    /**
+     * Executed every time the user interacts with the grid
+     */
     useEffect(() => {
         console.log('Revealed', revealedSquares)
         console.log('Flagged', flaggedSquares)
         console.log('Minefield', mineField)
+
         if (checkIfUserWon()) {
             setGameStatus(GAME_STATUS.WIN)
+            alert("CONGRATULATIONS! You have successfully avoided Waldo. Now go brag to your friends!")
         }
     }, [revealedSquares, flaggedSquares])
 
+    /**
+     * Init
+     */
     useEffect(() => {
         // Generate the minefield
         const { mineField: newMineField, mines } = generateMineField(
@@ -44,6 +52,9 @@ export const Desk = (props) => {
         setMineField(newMineField)
     }, [])
 
+    /**
+     * Reverts this component to it's initial state
+     */
     const resetGame = () => {
         setMineLocations([])
         setRevealedSquares(0)
@@ -59,6 +70,11 @@ export const Desk = (props) => {
         setGameStatus(GAME_STATUS.PLAYING)
     }
 
+    /**
+     * Checks if the user won the game by looking at the amount of revealed
+     * and flagged squares (safe squares) and also the mine locations
+     * @returns {boolean} true if the user won the game
+     */
     const checkIfUserWon = () => {
         const totalBoardSize = Math.pow(boardSize, 2)
 
@@ -68,6 +84,10 @@ export const Desk = (props) => {
         )
     }
 
+    /**
+     * Reveals all the mines in the grid
+     * Used when the user loses the game by clicking on a mine
+     */
     const revealAllMines = () => {
         const newMineField = [...mineField]
 
@@ -83,7 +103,13 @@ export const Desk = (props) => {
 
         setMineField(newMineField)
     }
-
+    
+    /**
+     * Handles the onClick of each square
+     * 
+     * @param {number} posX x position of the square that was clicked
+     * @param {number} posY y position of the square that was clicked
+     */
     const revealSquareHandler = (posX, posY) => {
         if (gameStatus !== GAME_STATUS.PLAYING) return
 
@@ -103,14 +129,13 @@ export const Desk = (props) => {
         } else {
             // Set state
             newMineField[posX] = [...newMineField[posX]]
-
             newMineField[posX][posY] = {
                 ...newMineField[posX][posY],
                 isRevealed: true,
             }
 
-            if (newMineField[posX][posY].isFlagged) {
-                newMineField[posX][posY].isFlagged = false
+            if (clickedSquare.isFlagged) {
+                clickedSquare.isFlagged = false
                 setFlaggedSquares(flaggedSquares - 1)
             }
 
@@ -120,6 +145,12 @@ export const Desk = (props) => {
         }
     }
 
+    /**
+     * Uses an iterative algorithm to reveal all adjacent squares that
+     * have 0 neighbors
+     * @param {number} posX x position of the square that was clicked
+     * @param {number} posY y position of the square that was clicked 
+     */
     const revealAdjacentEmptySquares = (posX, posY) => {
         let revealed = 0
 
@@ -136,13 +167,11 @@ export const Desk = (props) => {
 
             if (currentSquare.isRevealed) continue
 
-            let { posX: x, posY: y } = currentSquare
-
-            newMineField[x][y].isRevealed = true
+            currentSquare.isRevealed = true
             revealed++
 
-            if (newMineField[x][y].isFlagged) {
-                newMineField[x][y].isFlagged = false
+            if (currentSquare.isFlagged) {
+                currentSquare.isFlagged = false
                 setFlaggedSquares(flaggedSquares - 1)
             }
 
@@ -159,7 +188,13 @@ export const Desk = (props) => {
         setRevealedSquares(revealedSquares + revealed)
     }
 
-    const getEmptyNeighbors = (square, mineFieldClone) => {
+    /**
+     * An array of the given square's neighbors that are: not mines, not revealed and not flagged
+     * @param {*} square The target square
+     * @param {*} mineField A shallow copy of the entire mineField/grid
+     * @returns [] empty neighbors
+     */
+    const getEmptyNeighbors = (square, mineField) => {
         const { posX, posY } = square
 
         const emptyNeighbors = []
@@ -170,7 +205,7 @@ export const Desk = (props) => {
 
                 let square = null
                 try {
-                    square = mineFieldClone[posX + x][posY + y]
+                    square = mineField[posX + x][posY + y]
                 } catch (e) {
                     continue
                 }
@@ -189,15 +224,22 @@ export const Desk = (props) => {
         return emptyNeighbors
     }
 
+    /**
+     * Handles the right click of a square
+     * @param {number} posX x position of the square that was clicked
+     * @param {number} posY y position of the square that was clicked
+     */
     const flagSquareHandler = (posX, posY) => {
         if (gameStatus !== GAME_STATUS.PLAYING) return
 
         const newMineField = [...mineField]
         newMineField[posX] = [...newMineField[posX]]
 
-        const invertedFlag = !newMineField[posX][posY].isFlagged
+        const flaggedSquare = newMineField[posX][posY]
+
+        const invertedFlag = !flaggedSquare.isFlagged
         newMineField[posX][posY] = {
-            ...newMineField[posX][posY],
+            ...flaggedSquare,
             isFlagged: invertedFlag,
         }
 

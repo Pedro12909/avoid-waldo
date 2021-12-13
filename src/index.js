@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
@@ -37,8 +37,8 @@ const App = () => {
                 Waldo.
             </Subtitle>
             <Desk
-                boardSize={5}
-                numberOfMines={3}
+                boardSize={10}
+                numberOfMines={10}
             />
         </Container>
     )
