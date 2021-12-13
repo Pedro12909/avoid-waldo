@@ -4,6 +4,9 @@
 
 Please fork this repository and when ready to submit, create a Pull Request.
 
+## Demo
+Head over to https://avoid-waldo.netlify.app for a demonstration of the project
+
 ## Installation
 
 It assumes you have the latest node and yarn installed.
