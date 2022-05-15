@@ -1,8 +1,8 @@
 {
-  "name": "minesweeper",
+  "name": "avoid-waldo",
   "version": "1.0.0",
-  "description": "Minesweeper",
-  "author": "michi <michi@cloudflare.com>",
+  "description": "A Minesweeper clone, with a twist",
+  "author": "Pedro Portela <pjpdcp12909@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {

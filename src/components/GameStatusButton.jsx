@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import styled from 'styled-components'
 
 import GAME_STATUS from '../game-status'
@@ -30,6 +30,6 @@ export const GameStatusButton = (props) => {
             path = waldo
             break
     }
-
-    return <Image src={path} onClick={props.resetGame}/>
+    return useMemo(() => <Image src={path} onClick={props.resetGame}/>)
 }
+
